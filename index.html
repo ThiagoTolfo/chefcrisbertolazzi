@@ -7,12 +7,33 @@
 <link rel="apple-touch-icon" href="images/logo-gold.png">
 <title>Chef Cris Bertolazzi — Excelência em Gastronomia</title>
 <meta name="description" content="Chef Cris Bertolazzi — panificação, chocolataria e confeitaria de alto padrão. Formação no Brasil, Itália e França. Cursos de Croissant e Panetone.">
+<link rel="canonical" href="https://chefcrisbertolazzi.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Chef Cris Bertolazzi — Excelência em Gastronomia">
+<meta property="og:description" content="Panificação, chocolataria e confeitaria de alto padrão. Formação no Brasil, Itália e França.">
+<meta property="og:image" content="images/hero-croissants-close.jpg">
+<meta property="og:locale" content="pt_BR">
+<meta name="theme-color" content="#0e0b08">
+
+<link rel="preload" as="image" href="images/sobre-ensaio.jpg">
+<link rel="preload" as="image" href="images/hero-croissants-close.jpg">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Cris Bertolazzi",
+  "jobTitle": "Chef de Panificação, Chocolataria e Confeitaria",
+  "url": "https://chefcrisbertolazzi.com/",
+  "sameAs": ["https://www.instagram.com/chefcrisbertolazzi/"]
+}
+</script>
 <style>
   /* ==========================================
-     1. DESIGN SYSTEM & BASE GLOBAL
+     1. DESIGN SYSTEM & BASE GLOBAL (PERFORMANCE)
      ========================================== */
   :root {
     --preto: #0e0b08;
@@ -31,7 +52,13 @@
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; overflow-x: hidden; }
+  html { scroll-behavior: smooth; overflow-x: hidden; scrollbar-color: var(--marrom-claro) var(--branco); scrollbar-width: thin; }
+  
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  }
+
   body {
     font-family: var(--sans);
     background: var(--branco);
@@ -42,8 +69,21 @@
   }
   img { display: block; max-width: 100%; }
   a { text-decoration: none; color: inherit; }
+  a:focus-visible, button:focus-visible, .prato-card:focus-visible { outline: 2px solid var(--dourado); outline-offset: 3px; }
   .container { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
   ::selection { background: var(--dourado); color: var(--preto); }
+  
+  .skip-link {
+    position: absolute; left: 12px; top: -60px; z-index: 4000; background: var(--dourado); color: var(--preto);
+    padding: 10px 18px; border-radius: 2px; font-size: 13px; transition: top .2s ease;
+  }
+  .skip-link:focus { top: 12px; }
+
+  /* Content-Visibility para seções do meio/fim da página */
+  .premios, .cursos, .consultoria, .casa408, .encerramento {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 700px;
+  }
 
   /* ---------- Notas de margem ---------- */
   .margin-note {
@@ -74,18 +114,24 @@
   ::-webkit-scrollbar-track { background: var(--branco); }
   ::-webkit-scrollbar-thumb { background: var(--marrom-claro); border-radius: 0; }
   ::-webkit-scrollbar-thumb:hover { background: var(--dourado); }
-  html { scrollbar-color: var(--marrom-claro) var(--branco); scrollbar-width: thin; }
 
-  /* ---------- Barra de progresso de leitura ---------- */
+  /* ---------- Barra de progresso de leitura (Zero linha/artefato no topo Y:0) ---------- */
   .progress-bar {
-    position: fixed; top: 0; left: 0; height: 2.5px; width: 0%; z-index: 2000;
+    position: fixed; top: 0; left: 0; height: 2.5px; width: 100%; z-index: 2000;
     background: linear-gradient(90deg, var(--marrom-claro), var(--dourado), var(--laranja));
-    transition: width .1s linear;
+    transform: scaleX(0);
+    transform-origin: left center;
+    opacity: 0;
+    transition: opacity .2s ease;
+    will-change: transform, opacity;
+  }
+  .progress-bar.active {
+    opacity: 1;
   }
 
-  /* ---------- Textura de fundo ---------- */
+  /* ---------- Textura de fundo Otimizada ---------- */
   .grain {
-    position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: .035; mix-blend-mode: multiply;
+    position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: .025;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
@@ -93,23 +139,23 @@
   header {
     position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
     padding: 22px 0;
-    transition: background .4s ease, padding .4s ease, box-shadow .4s ease;
+    transform: translateZ(0);
+    transition: background .3s ease, padding .3s ease, box-shadow .3s ease;
   }
   header.scrolled {
-    background: rgba(14, 11, 8, .92);
-    backdrop-filter: blur(10px);
+    background: rgba(14, 11, 8, .95);
     padding: 12px 0;
     box-shadow: 0 6px 30px rgba(0,0,0,.4);
   }
   header .container { display: flex; align-items: center; justify-content: space-between; }
   .brand { display: flex; align-items: center; gap: 12px; }
-  .brand img { height: 46px; width: auto; transition: height .4s ease; }
+  .brand img { height: 46px; width: auto; transition: height .3s ease; }
   header.scrolled .brand img { height: 36px; }
   .brand-text { font-family: var(--serif); color: var(--branco); letter-spacing: .03em; }
   .brand-text b { display: block; font-size: 17px; font-weight: 600; }
   .brand-text span { display: block; font-size: 9.5px; letter-spacing: .28em; color: var(--dourado-claro); text-transform: uppercase; margin-top: 2px; }
 
-  nav.desktop-nav { display: flex; gap: 38px; }
+  nav.desktop-nav { display: flex; gap: 32px; align-items: center; }
   nav.desktop-nav a {
     color: var(--creme); font-size: 12.5px; letter-spacing: .15em; text-transform: uppercase;
     font-weight: 500; position: relative; padding-bottom: 4px;
@@ -118,7 +164,7 @@
     content: ''; position: absolute; left: 0; bottom: 0; width: 0; height: 1px; background: var(--dourado);
     transition: width .3s ease;
   }
-  nav.desktop-nav a:hover::after { width: 100%; }
+  nav.desktop-nav a:hover::after, nav.desktop-nav a:focus-visible::after { width: 100%; }
 
   .nav-cta {
     border: 1px solid var(--dourado); color: var(--dourado-claro)!important;
@@ -127,16 +173,16 @@
   .nav-cta:hover { background: var(--dourado); color: var(--preto)!important; }
   .nav-cta::after { display: none; }
 
-  .nav-social { display: flex; align-items: center; padding-bottom: 0!important; margin-left: -16px; transform: translateY(-1px); }
+  .nav-social { display: flex; align-items: center; padding-bottom: 0!important; margin-left: -10px; transform: translateY(-1px); }
   .nav-social svg { width: 17px; height: 17px; stroke: var(--creme); transition: stroke .3s ease; }
-  .nav-social:hover svg { stroke: var(--dourado-claro); }
+  .nav-social:hover svg, .nav-social:focus-visible svg { stroke: var(--dourado-claro); }
   .nav-social::after { display: none; }
 
   .burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 6px; }
   .burger span { width: 26px; height: 1.5px; background: var(--branco); display: block; }
 
   /* ==========================================
-     2. HERO GLOW (AMBIENT GLOW SYSTEM)
+     2. HERO GLOW
      ========================================== */
   .hero-glow {
     position: relative;
@@ -148,50 +194,29 @@
     overflow: hidden;
     text-align: center;
     padding: 140px 20px 90px;
+    margin-top: 0;
   }
 
-  /* Horizon Glow Inferior (Base Ambar/Dourada da imagem de referencia) */
   .ambient-glow {
     position: absolute;
     bottom: -140px;
     left: 50%;
-    transform: translateX(-50%) translate3d(0, 0, 0);
+    transform: translateX(-50%) translateZ(0);
     width: 90vw;
     max-width: 1100px;
     height: 460px;
     background: radial-gradient(
       ellipse at center,
-      rgba(217, 119, 46, 0.5) 0%,
-      rgba(201, 162, 39, 0.28) 35%,
+      rgba(217, 119, 46, 0.45) 0%,
+      rgba(201, 162, 39, 0.22) 35%,
       rgba(14, 11, 8, 0) 70%
     );
-    filter: blur(85px);
+    filter: blur(80px);
     pointer-events: none;
     border-radius: 50%;
     z-index: 1;
-    will-change: transform;
   }
 
-  /* Luz Superior para Profundidade 3D */
-  .hero-glow::before {
-    content: '';
-    position: absolute;
-    top: -90px;
-    left: 50%;
-    transform: translateX(-50%) translate3d(0, 0, 0);
-    width: 650px;
-    height: 280px;
-    background: radial-gradient(
-      ellipse at center,
-      rgba(201, 162, 39, 0.16) 0%,
-      rgba(14, 11, 8, 0) 70%
-    );
-    filter: blur(95px);
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  /* Conteudo do Hero */
   .hero-glow-content {
     max-width: 860px;
     margin: 0 auto;
@@ -256,7 +281,6 @@
     flex-wrap: wrap;
   }
 
-  /* Indicador de Rolagem Integrado */
   .hero-glow .scroll-cue {
     position: absolute;
     bottom: 30px;
@@ -285,7 +309,7 @@
   .btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 10px;
     padding: 16px 34px; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; font-weight: 500;
-    border-radius: 2px; transition: all .3s ease; cursor: pointer; border: 1px solid transparent;
+    border-radius: 2px; transition: transform .25s ease, background .25s ease, box-shadow .25s ease; cursor: pointer; border: 1px solid transparent;
   }
   .btn-gold { background: var(--dourado); color: var(--preto); }
   .btn-gold:hover { background: var(--dourado-claro); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(201,162,39,.25); }
@@ -295,45 +319,16 @@
   .btn-laranja:hover { background: var(--laranja-escuro); transform: translateY(-2px); }
 
   /* ==========================================
-     3. DEMAIS SEÇÕES DO SITE
+     3. SEÇÕES NARRATIVAS (SOBRE + JORNADA EM FUNDO CREME)
      ========================================== */
-  .stats { background: var(--preto-2); position: relative; z-index: 3; }
-  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
-  .stat-item { padding: 34px 20px; text-align: center; border-left: 1px solid rgba(248,243,233,.08); }
-  .stat-item:first-child { border-left: none; }
-  .stat-item b { display: block; font-family: var(--serif); font-size: clamp(26px,3vw,38px); color: var(--dourado-claro); font-weight: 500; }
-  .stat-item span { display: block; margin-top: 6px; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--creme); opacity: .75; }
-
-  .float-contact {
-    position: fixed; bottom: 28px; right: 28px; z-index: 900;
-    width: 56px; height: 56px; border-radius: 50%; background: var(--laranja);
-    display: flex; align-items: center; justify-content: center; box-shadow: 0 12px 30px rgba(20,16,12,.35);
-    opacity: 0; pointer-events: none; transform: translateY(16px) scale(.9);
-    transition: opacity .35s ease, transform .35s ease, background .3s ease;
+  .sobre {
+    padding: 110px 0 60px;
+    background: var(--creme);
+    overflow: hidden;
   }
-  .float-contact.show { opacity: 1; pointer-events: all; transform: translateY(0) scale(1); }
-  .float-contact:hover { background: var(--laranja-escuro); }
-  .float-contact svg { width: 24px; height: 24px; stroke: var(--branco); fill: none; stroke-width: 1.6; }
-
-  .motif-divider { display: flex; align-items: center; justify-content: center; gap: 22px; padding: 64px 0 44px; }
-  .motif-divider .line { height: 1px; width: 110px; background: linear-gradient(90deg, transparent, var(--marrom-claro), transparent); }
-  .motif-divider img { width: 34px; opacity: .85; }
-  section { position: relative; }
-  .dark-section { background: var(--preto); color: var(--creme); }
-  .dark-section .motif-divider .line { background: linear-gradient(90deg, transparent, var(--marrom-medio), transparent); }
-
-  .section-label { font-size: 12px; letter-spacing: .35em; text-transform: uppercase; color: var(--laranja-escuro); margin-bottom: 16px; font-weight: 600; }
-  .dark-section .section-label { color: var(--dourado-claro); }
-  h2.section-title { font-family: var(--serif); font-size: clamp(32px, 4.2vw, 52px); font-weight: 400; line-height: 1.08; color: var(--preto); }
-  .dark-section h2.section-title { color: var(--branco); }
-  h2.section-title em { font-style: italic; color: var(--marrom-claro); font-weight: 300; }
-  .dark-section h2.section-title em { color: var(--dourado-claro); }
-
-  /* Sobre */
-  .sobre { padding: 130px 0 90px; overflow: hidden; }
   .sobre-grid { display: grid; grid-template-columns: .85fr 1.15fr; gap: 70px; align-items: center; }
   .sobre-img-wrap { position: relative; }
-  .sobre-img-wrap img { width: 100%; border-radius: 2px; filter: sepia(.06) saturate(1.05); }
+  .sobre-img-wrap img { width: 100%; border-radius: 2px; filter: saturate(1.05); aspect-ratio: 4/5; object-fit: cover; background: #ded2bd; }
   .sobre-img-frame { position: absolute; top: 22px; left: -22px; right: -22px; bottom: -22px; border: 1px solid var(--dourado); z-index: -1; border-radius: 2px; }
   .sobre-badge {
     position: absolute; bottom: -32px; right: -32px; width: 118px; height: 118px; border-radius: 50%;
@@ -354,16 +349,271 @@
   .pillar b { font-family: var(--serif); font-size: 15px; letter-spacing: .05em; color: var(--marrom-escuro); display: block; margin-bottom: 4px; }
   .pillar span { font-size: 12px; color: var(--marrom-claro); letter-spacing: .05em; }
 
-  /* Jornada */
-  .jornada { padding: 20px 0 110px; }
-  .jornada-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
-  .jornada-card { position: relative; height: 480px; overflow: hidden; }
-  .jornada-card img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 12%; filter: grayscale(.15) sepia(.08); transition: transform .6s ease; }
-  .jornada-card:hover img { transform: scale(1.04); }
-  .jornada-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(20,16,12,.88), transparent 40%); }
+  /* Jornada (Fundo Creme) */
+  .jornada {
+    padding: 20px 0 90px;
+    background: var(--creme);
+  }
+  .jornada-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .jornada-card {
+    position: relative;
+    height: 480px;
+    overflow: hidden;
+    border-radius: 2px;
+    background: #ded2bd;
+    box-shadow: 0 12px 30px rgba(58, 36, 22, 0.08);
+  }
+  .jornada-card img {
+    width: 100%; height: 100%; object-fit: cover; object-position: 50% 12%;
+    filter: saturate(1.05); transition: transform .5s ease;
+    will-change: transform;
+  }
+  .jornada-card:hover img { transform: scale(1.03); }
+  .jornada-card::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(0deg, rgba(20,16,12,.75), transparent 45%);
+  }
   .jornada-cap { position: absolute; left: 26px; bottom: 22px; z-index: 2; color: var(--branco); }
   .jornada-cap .yr { font-size: 11px; letter-spacing: .25em; text-transform: uppercase; color: var(--dourado-claro); display: block; margin-bottom: 6px; }
   .jornada-cap h4 { font-family: var(--serif); font-size: 24px; font-weight: 500; }
+
+  /* ==========================================
+     4. SEÇÃO PRATOS DA CHEF (GALERIA ALL BLACK)
+     ========================================== */
+  .pratos-section {
+    padding: 90px 0 110px;
+    background: var(--preto);
+    color: var(--creme);
+    position: relative;
+    overflow: hidden;
+    transform: translateZ(0);
+  }
+  .pratos-head {
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto 50px;
+  }
+  .pratos-head p { margin-top: 18px; color: var(--creme); font-weight: 300; line-height: 1.8; opacity: .85; }
+  .pratos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    align-items: stretch;
+  }
+  .prato-card {
+    position: relative;
+    border-radius: 3px;
+    overflow: hidden;
+    background: var(--preto-2);
+    border: 1px solid rgba(201, 162, 39, 0.15);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0;
+    text-align: left;
+    transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+  }
+  .prato-card:nth-child(1) { grid-column: span 2; }
+  .prato-card:hover, .prato-card:focus-visible {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 35px rgba(0, 0, 0, 0.5);
+    border-color: var(--dourado);
+  }
+
+  .prato-img-wrapper {
+    position: relative;
+    width: 100%;
+    height: 380px;
+    overflow: hidden;
+    background: var(--preto-2);
+  }
+  .pratos-grid .prato-card:nth-child(n+3) .prato-img-wrapper {
+    height: 340px;
+  }
+
+  .prato-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    will-change: transform;
+  }
+  .prato-card:hover .prato-img-wrapper img, .prato-card:focus-visible .prato-img-wrapper img {
+    transform: scale(1.05);
+  }
+
+  .prato-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(14, 11, 8, 0.9) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 24px;
+  }
+  
+  /* Alinhamento Perfeito das Tags e Títulos */
+  .prato-tag {
+    font-size: 10px;
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    color: var(--dourado-claro);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  
+  .prato-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--branco);
+    font-weight: 500;
+    line-height: 1.2;
+    min-height: 53px;
+    display: flex;
+    align-items: flex-end;
+  }
+  
+  .prato-desc {
+    font-size: 13px;
+    color: var(--creme);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .3s ease, transform .3s ease;
+    font-weight: 300;
+    line-height: 1.5;
+    margin-top: 8px;
+    min-height: 38px;
+    pointer-events: none;
+    will-change: opacity, transform;
+  }
+  .prato-card:hover .prato-desc, .prato-card:focus-visible .prato-desc {
+    opacity: 0.9;
+    transform: translateY(0);
+  }
+
+  .prato-expand-icon {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(14, 11, 8, 0.82);
+    border: 1px solid rgba(230, 200, 105, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--dourado-claro);
+    transition: background .25s ease, transform .25s ease, color .25s ease;
+  }
+  .prato-card:hover .prato-expand-icon, .prato-card:focus-visible .prato-expand-icon {
+    background: var(--dourado);
+    color: var(--preto);
+    transform: scale(1.08);
+  }
+
+  /* MODAL LIGHTBOX DOS PRATOS */
+  .prato-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    background: rgba(14, 11, 8, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s ease;
+  }
+  .prato-modal.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .prato-modal-content {
+    background: var(--preto);
+    border: 1px solid var(--dourado);
+    max-width: 900px;
+    width: 100%;
+    border-radius: 4px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+    transform: scale(0.97);
+    transition: transform .3s ease;
+  }
+  .prato-modal.active .prato-modal-content {
+    transform: scale(1);
+  }
+  .prato-modal-img {
+    width: 100%;
+    height: 100%;
+    min-height: 420px;
+    object-fit: cover;
+  }
+  .prato-modal-info {
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: var(--preto-2);
+  }
+  .prato-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--branco);
+    font-size: 32px;
+    cursor: pointer;
+    line-height: 1;
+    transition: color .25s ease;
+    z-index: 10;
+  }
+  .prato-modal-close:hover, .prato-modal-close:focus-visible { color: var(--dourado); }
+
+  /* ==========================================
+     5. DEMAIS SEÇÕES DO SITE
+     ========================================== */
+  .stats { background: var(--preto-2); position: relative; z-index: 3; }
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .stat-item { padding: 34px 20px; text-align: center; border-left: 1px solid rgba(248,243,233,.08); }
+  .stat-item:first-child { border-left: none; }
+  .stat-item b { display: block; font-family: var(--serif); font-size: clamp(26px,3vw,38px); color: var(--dourado-claro); font-weight: 500; }
+  .stat-item span { display: block; margin-top: 6px; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--creme); opacity: .75; }
+
+  .float-contact {
+    position: fixed; bottom: 28px; right: 28px; z-index: 900;
+    width: 56px; height: 56px; border-radius: 50%; background: var(--laranja);
+    display: flex; align-items: center; justify-content: center; box-shadow: 0 12px 30px rgba(20,16,12,.35);
+    opacity: 0; pointer-events: none; transform: translateY(16px) scale(.9);
+    transition: opacity .3s ease, transform .3s ease, background .3s ease;
+  }
+  .float-contact.show { opacity: 1; pointer-events: all; transform: translateY(0) scale(1); }
+  .float-contact:hover { background: var(--laranja-escuro); }
+  .float-contact svg { width: 24px; height: 24px; stroke: var(--branco); fill: none; stroke-width: 1.6; }
+
+  .motif-divider {
+    display: flex; align-items: center; justify-content: center; gap: 22px; padding: 64px 0 44px;
+    background: transparent;
+  }
+  .motif-divider .line { height: 1px; width: 110px; background: linear-gradient(90deg, transparent, var(--marrom-claro), transparent); }
+  .motif-divider img { width: 34px; opacity: .85; }
+
+  section { position: relative; }
+  .dark-section { background: var(--preto); color: var(--creme); }
+  .dark-section .motif-divider .line { background: linear-gradient(90deg, transparent, var(--marrom-medio), transparent); }
+
+  .section-label { font-size: 12px; letter-spacing: .35em; text-transform: uppercase; color: var(--laranja-escuro); margin-bottom: 16px; font-weight: 600; }
+  .dark-section .section-label { color: var(--dourado-claro); }
+  h2.section-title { font-family: var(--serif); font-size: clamp(32px, 4.2vw, 52px); font-weight: 400; line-height: 1.08; color: var(--preto); }
+  .dark-section h2.section-title { color: var(--branco); }
+  h2.section-title em { font-style: italic; color: var(--marrom-claro); font-weight: 300; }
+  .dark-section h2.section-title em { color: var(--dourado-claro); }
 
   /* Trajetória */
   .trajetoria { padding: 90px 0 110px; background: var(--creme); overflow: hidden; }
@@ -393,6 +643,7 @@
 
   /* Prêmios */
   .premios { padding: 110px 0; overflow: hidden; }
+  .premios-lead { margin-top: 22px; color: var(--creme); font-weight: 300; line-height: 1.8; opacity: .85; }
   .premios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 60px; background: rgba(248,243,233,.08); }
   .premio-card { background: var(--preto-2); padding: 46px 34px; position: relative; overflow: hidden; transition: background .35s ease; text-align: center; }
   .premio-card:hover { background: var(--marrom-escuro); }
@@ -488,15 +739,18 @@
   .footer-brand div span { font-size: 10px; letter-spacing: .2em; color: var(--marrom-claro); text-transform: uppercase; }
   .social { display: flex; gap: 22px; }
   .social a { width: 40px; height: 40px; border: 1px solid rgba(248,243,233,.25); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all .3s ease; }
-  .social a:hover { border-color: var(--dourado); background: rgba(201,162,39,.1); }
+  .social a:hover, .social a:focus-visible { border-color: var(--dourado); background: rgba(201,162,39,.1); }
   .social svg { width: 16px; height: 16px; stroke: var(--creme); }
   .copyright { text-align: center; margin-top: 36px; font-size: 11.5px; color: var(--marrom-claro); letter-spacing: .05em; }
 
-  /* Reveal */
+  /* Reveal Animation */
   .reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s ease, transform .8s ease; }
   .reveal.in { opacity: 1; transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; }
+  }
 
-  /* Responsivo */
+  /* Responsivo Tablet & Telas Médias */
   @media (max-width: 980px) {
     nav.desktop-nav { display: none; }
     .burger { display: flex; }
@@ -513,6 +767,8 @@
     .t-item { padding-left: 76px; }
     .t-num { width: 56px; height: 56px; font-size: 17px; }
   }
+
+  /* Responsivo Smartphone (Mobile Otimizado & Alinhado) */
   @media (max-width: 600px) {
     .container { padding: 0 22px; }
     .hero-glow { padding: 130px 20px 80px; }
@@ -525,13 +781,60 @@
     .casa408-caption { right: -14px; bottom: -20px; padding: 12px 18px; }
     .casa408-caption b { font-size: 22px; }
     .ambient-glow { height: 320px; filter: blur(60px); }
+
+    /* PRATOS DA CHEF NO MOBILE */
+    .pratos-section { padding: 40px 0 !important; }
+    .pratos-head { margin-bottom: 24px !important; }
+    .pratos-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+    .prato-card:nth-child(1) { grid-column: span 2 !important; }
+
+    .prato-img-wrapper,
+    .pratos-grid .prato-card:nth-child(n+3) .prato-img-wrapper { height: 210px !important; }
+    .prato-card:nth-child(1) .prato-img-wrapper { height: 240px !important; }
+
+    .prato-overlay {
+      padding: 10px 12px !important;
+      background: linear-gradient(180deg, transparent 30%, rgba(14, 11, 8, 0.92) 90%) !important;
+    }
+    
+    .prato-tag {
+      font-size: 7.5px !important;
+      margin-bottom: 2px !important;
+      letter-spacing: .12em !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
+    
+    .prato-title {
+      font-size: 13px !important;
+      line-height: 1.2 !important;
+      min-height: 32px !important;
+      display: flex !important;
+      align-items: flex-end !important;
+    }
+
+    .prato-desc { display: none !important; }
+
+    .prato-expand-icon {
+      width: 24px !important;
+      height: 24px !important;
+      top: 6px !important;
+      right: 6px !important;
+      font-size: 10px !important;
+    }
+
+    .prato-modal { padding: 16px !important; }
+    .prato-modal-content { grid-template-columns: 1fr !important; max-height: 85vh; overflow-y: auto; }
+    .prato-modal-img { min-height: 200px !important; max-height: 250px !important; }
+    .prato-modal-info { padding: 24px 20px !important; }
   }
 
-  /* Menu Mobile */
+  /* Menu Mobile Overlay */
   .mobile-menu {
     position: fixed; inset: 0; background: rgba(14, 11, 8, .98); z-index: 1500;
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 34px;
-    opacity: 0; pointer-events: none; transition: opacity .4s ease;
+    opacity: 0; pointer-events: none; transition: opacity .3s ease;
   }
   .mobile-menu.open { opacity: 1; pointer-events: all; }
   .mobile-menu a { font-family: var(--serif); font-size: 26px; color: var(--branco); }
@@ -540,49 +843,80 @@
 </head>
 <body>
 
-<div class="grain"></div>
-<div class="progress-bar" id="progressBar"></div>
+<svg style="display:none" aria-hidden="true">
+  <defs>
+    <symbol id="ic-botanica" viewBox="0 0 200 200">
+      <circle cx="100" cy="100" r="88"/>
+      <path d="M100 26 Q68 58 68 100 Q68 142 100 174"/>
+      <path d="M100 38 Q84 48 76 57 M100 58 Q82 66 73 75 M100 78 Q82 87 73 96 M100 98 Q82 107 73 116 M100 118 Q84 127 76 136 M100 138 Q87 145 80 152"/>
+      <path d="M128 46 Q150 68 150 100 Q150 132 128 154"/>
+      <path d="M128 58 L142 50 M128 76 L145 70 M128 94 L147 92 M128 112 L145 116 M128 130 L142 138"/>
+    </symbol>
+    <symbol id="ic-compasso" viewBox="0 0 24 24">
+      <path d="M12 2c-3 4-7 6-7 11a7 7 0 0 0 14 0c0-5-4-7-7-11z"/><path d="M12 6v14"/>
+    </symbol>
+    <symbol id="ic-laurel" viewBox="0 0 24 40">
+      <path d="M14 2 Q6 8 6 18 Q6 28 14 38"/>
+      <path d="M14 6 Q10 8 8 10 M14 12 Q9 13 7 15 M14 18 Q9 19 7 21 M14 24 Q9 25 7 27 M14 30 Q10 31 8 33"/>
+    </symbol>
+    <symbol id="ic-instagram" viewBox="0 0 24 24">
+      <rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/>
+    </symbol>
+    <symbol id="ic-whatsapp" viewBox="0 0 24 24">
+      <path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.6L3 21l1.9-5.6A8.5 8.5 0 1 1 21 11.5z"/>
+    </symbol>
+  </defs>
+</svg>
+
+<a class="skip-link" href="#conteudo-principal">Pular para o conteúdo</a>
+
+<div class="grain" aria-hidden="true"></div>
+<div class="progress-bar" id="progressBar" role="progressbar" aria-label="Progresso de leitura da página" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
 
 <header id="site-header">
   <div class="container">
     <a href="#topo" class="brand">
-      <img src="images/logo-gold.png" alt="Chef Cris Bertolazzi">
+      <img src="images/logo-gold.png" alt="Chef Cris Bertolazzi" width="46" height="46" loading="eager" fetchpriority="high" decoding="async">
       <div class="brand-text">
         <b>Chef Cris</b>
         <span>Bertolazzi</span>
       </div>
     </a>
-    <nav class="desktop-nav">
+    <nav class="desktop-nav" aria-label="Navegação principal">
       <a href="#sobre">A Chef</a>
+      <a href="#pratos">Pratos</a>
       <a href="#trajetoria">Formação</a>
       <a href="#premios">Prêmios</a>
       <a href="#cursos">Cursos</a>
       <a href="#casa408">Casa 408</a>
       <a href="#contato">Contato</a>
-      <a href="https://www.instagram.com/chefcrisbertolazzi/" target="_blank" rel="noopener" class="nav-social" aria-label="Instagram">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+      <a href="https://www.instagram.com/chefcrisbertolazzi/" target="_blank" rel="noopener noreferrer" class="nav-social" aria-label="Instagram da Chef Cris Bertolazzi (abre em nova aba)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><use href="#ic-instagram"/></svg>
       </a>
       <a href="#cursos" class="nav-cta">Ver Cursos</a>
     </nav>
-    <button class="burger" id="burgerBtn" aria-label="Abrir menu">
+    <button class="burger" id="burgerBtn" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobileMenu">
       <span></span><span></span><span></span>
     </button>
   </div>
 </header>
 
-<div class="mobile-menu" id="mobileMenu">
-  <button class="close-btn" id="closeMenu">&times;</button>
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Menu de navegação">
+  <button class="close-btn" id="closeMenu" aria-label="Fechar menu">&times;</button>
   <a href="#sobre">A Chef</a>
+  <a href="#pratos">Pratos da Chef</a>
   <a href="#trajetoria">Formação</a>
   <a href="#premios">Prêmios</a>
   <a href="#cursos">Cursos</a>
   <a href="#casa408">Casa 408</a>
   <a href="#contato">Contato</a>
-  <a href="https://www.instagram.com/chefcrisbertolazzi/" target="_blank" rel="noopener" style="font-size:18px;display:flex;align-items:center;gap:10px;">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:20px;height:20px;"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+  <a href="https://www.instagram.com/chefcrisbertolazzi/" target="_blank" rel="noopener noreferrer" style="font-size:18px;display:flex;align-items:center;gap:10px;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:20px;height:20px;" aria-hidden="true"><use href="#ic-instagram"/></svg>
     Instagram
   </a>
 </div>
+
+<main id="conteudo-principal">
 
 <section class="hero-glow" id="topo">
   <div class="ambient-glow" aria-hidden="true"></div>
@@ -590,7 +924,7 @@
   <div class="hero-glow-content">
     <span class="eyebrow">Panificação · Chocolataria · Confeitaria Artística</span>
     <h1>Chef Cris <br><em>Bertolazzi</em></h1>
-    <p class="lead"></p>
+    <p class="lead">Técnica francesa e italiana, precisão de origem acadêmica e sensibilidade artística em cada criação.</p>
     <div class="hero-actions">
       <a href="#cursos" class="btn btn-gold">Conhecer os Cursos</a>
       <a href="#sobre" class="btn btn-outline">A História da Chef</a>
@@ -602,7 +936,7 @@
   </div>
 </section>
 
-<section class="stats">
+<section class="stats" aria-label="Números em destaque">
   <div class="stats-grid">
     <div class="stat-item"><b>3</b><span>Países de Formação</span></div>
     <div class="stat-item"><b>15+</b><span>Certificações Internacionais</span></div>
@@ -612,14 +946,14 @@
 </section>
 
 <section class="sobre" id="sobre">
-  <svg class="watermark wm-left" viewBox="0 0 200 200"><circle cx="100" cy="100" r="88"/><path d="M100 26 Q68 58 68 100 Q68 142 100 174"/><path d="M100 38 Q84 48 76 57 M100 58 Q82 66 73 75 M100 78 Q82 87 73 96 M100 98 Q82 107 73 116 M100 118 Q84 127 76 136 M100 138 Q87 145 80 152"/><path d="M128 46 Q150 68 150 100 Q150 132 128 154"/><path d="M128 58 L142 50 M128 76 L145 70 M128 94 L147 92 M128 112 L145 116 M128 130 L142 138"/></svg>
+  <svg class="watermark wm-left" viewBox="0 0 200 200" aria-hidden="true"><use href="#ic-botanica"/></svg>
   <div class="margin-note left">Ensaio Fotográfico</div>
   <div class="margin-note right">Desde 2022</div>
   <div class="container">
     <div class="sobre-grid">
       <div class="reveal sobre-img-wrap">
         <div class="sobre-img-frame"></div>
-        <img src="images/sobre-ensaio.jpg" alt="Chef Cris Bertolazzi, ensaio fotográfico">
+        <img src="images/sobre-ensaio.jpg" alt="Chef Cris Bertolazzi, ensaio fotográfico" loading="eager" fetchpriority="high" decoding="async">
         <div class="sobre-badge">
           <div class="sobre-badge-inner">
             <span class="sig">Chef Cris</span>
@@ -631,8 +965,8 @@
         <div class="section-label">Quem é a Chef Cris</div>
         <h2 class="section-title">Do rigor das <em>exatas</em> à arte da gastronomia</h2>
         <p style="margin-top:26px;">Antes dos fornos e das bancadas de mármore, Cris Bertolazzi construiu uma carreira sólida no Direito e na Matemática — bacharelados que moldaram um raciocínio analítico estruturado e um compromisso inegociável com a precisão.</p>
-        <p>Essa base técnica encontrou, mais tarde, sua expressão mais sensível na cozinha. A transição para a alta gastronomia brought consigo o mesmo rigor da magistratura e a mesma lógica da matemática, agora aplicados à arte de panificação, chocolataria e confeitaria fina.</p>
-        <div class="sobre-quote">"Técnica apurada, precisão matemática e paixão criativa — os três pilares que sustentam cada criação."</div>
+        <p>Essa base técnica encontrou, mais tarde, sua expressão mais sensível na cozinha. A transição para a alta gastronomia trouxe consigo o mesmo rigor da magistratura e a mesma lógica da matemática, agora aplicados à arte de panificação, chocolataria e confeitaria fina.</p>
+        <div class="sobre-quote">"Técnica apurada, precisão matemática e paixão criativa, os três pilares que sustentam cada criação."</div>
         <div class="pillars">
           <div class="pillar"><b>Técnica</b><span>Precisão de origem acadêmica</span></div>
           <div class="pillar"><b>Precisão</b><span>Rigor herdado do Direito</span></div>
@@ -647,18 +981,105 @@
   <div class="container">
     <div class="jornada-grid reveal">
       <div class="jornada-card">
-        <img src="images/jornada-advogada.jpg" alt="Cris Bertolazzi na carreira jurídica">
+        <img src="images/jornada-advogada.jpg" alt="Cris Bertolazzi na carreira jurídica" loading="eager" decoding="async">
         <div class="jornada-cap"><span class="yr">Antes</span><h4>Direito & Magistratura</h4></div>
       </div>
       <div class="jornada-card">
-        <img src="images/jornada-chef.jpg" alt="Chef Cris Bertolazzi na alta gastronomia">
+        <img src="images/jornada-chef.jpg" alt="Chef Cris Bertolazzi na alta gastronomia" loading="eager" decoding="async">
         <div class="jornada-cap"><span class="yr">Hoje</span><h4>Alta Gastronomia</h4></div>
       </div>
     </div>
   </div>
 </section>
 
-<div class="motif-divider"><div class="line"></div><img src="images/logo-black.png" alt=""><div class="line"></div></div>
+<section class="pratos-section dark-section" id="pratos">
+  <svg class="watermark wm-right" viewBox="0 0 200 200" aria-hidden="true"><use href="#ic-botanica"/></svg>
+  <div class="margin-note left">Alta Gastronomia</div>
+  <div class="margin-note right">Criações Exclusivas</div>
+  <div class="container">
+    <div class="pratos-head reveal">  
+      <h2 class="section-title">Pratos da <em>Chef</em></h2>
+      <p>Conheça algumas das criações da Chef Cris Bertolazzi, onde técnicas clássicas francesas e italianas encontram a mais alta precisão artística.</p>
+    </div>
+
+    <div class="pratos-grid reveal">
+      <button type="button" class="prato-card" data-img="images/hero-croissants-close.jpg" data-tag="Viennoiserie" data-title="Croissant Francês Tradicional" data-desc="Folhado perfeito com manteiga de alta porcentagem de gordura, alvéolos bem definidos e crocância inigualável. Vencedor do Prêmio Boulangerie France Brasil.">
+        <div class="prato-img-wrapper">
+          <img src="images/hero-croissants-close.jpg" alt="Croissant Francês Tradicional Chef Cris" loading="eager" decoding="async">
+          <div class="prato-expand-icon" aria-hidden="true">⤢</div>
+          <div class="prato-overlay">
+            <span class="prato-tag">Viennoiserie</span>
+            <h3 class="prato-title">Croissant Francês Tradicional</h3>
+            <p class="prato-desc">Folhado perfeito com fermentação longa e dobras precisas. Clique para ampliar.</p>
+          </div>
+        </div>
+      </button>
+
+      <button type="button" class="prato-card" data-img="images/foto-torta-casa-408.webp" data-tag="Degustação" data-title="Red Velvet elegante" data-desc="Massa leve e vermelha em equilíbrio com a cremosidade fresca do cream cheese.">
+        <div class="prato-img-wrapper">
+          <img src="images/foto-torta-casa-408.webp" alt="Red Velvet elegante Chef Cris" loading="eager" decoding="async">
+          <div class="prato-expand-icon" aria-hidden="true">⤢</div>
+          <div class="prato-overlay">
+            <span class="prato-tag">Degustação</span>
+            <h3 class="prato-title">Red Velvet elegante</h3>
+            <p class="prato-desc">Massa leve e vermelha em equilíbrio com a cremosidade fresca do cream cheese.</p>
+          </div>
+        </div>
+      </button>
+
+      <button type="button" class="prato-card" data-img="images/hero-pao-fermentado.jpg" data-tag="Fermentação Natural" data-title="Chocotone Autoral" data-desc="Levain autoral com maturação lenta de 36 horas e recheio generoso.">
+        <div class="prato-img-wrapper">
+          <img src="images/hero-pao-fermentado.jpg" alt="Chocotone Chef Cris" loading="eager" decoding="async">
+          <div class="prato-expand-icon" aria-hidden="true">⤢</div>
+          <div class="prato-overlay">
+            <span class="prato-tag">Fermentação Natural</span>
+            <h3 class="prato-title">Chocotone Autoral</h3>
+            <p class="prato-desc">Levain autoral com maturação lenta de 36 horas.</p>
+          </div>
+        </div>
+      </button>
+
+      <button type="button" class="prato-card" data-img="images/hero-torta-branca.jpg" data-tag="Confeitaria Fina" data-title="Entremet de Baunilha & Frutas" data-desc="Alta confeitaria francesa com glaçagem espelhada, mousseline aveludada e base crocante autoral.">
+        <div class="prato-img-wrapper">
+          <img src="images/hero-torta-branca.jpg" alt="Torta Branca Fina Chef Cris" loading="eager" decoding="async">
+          <div class="prato-expand-icon" aria-hidden="true">⤢</div>
+          <div class="prato-overlay">
+            <span class="prato-tag">Confeitaria Fina</span>
+            <h3 class="prato-title">Entremet de Baunilha & Frutas</h3>
+            <p class="prato-desc">Torta fina com estética contemporânea e equilíbrio de doçura.</p>
+          </div>
+        </div>
+      </button>
+
+      <button type="button" class="prato-card" data-img="images/hero-torta-pistache.jpg" data-tag="Edição Especial" data-title="Torta Autoral de Pistache" data-desc="Elaborada com pasta 100% pura de pistache italiano, camadas intercaladas de biscoito joconde e praliné.">
+        <div class="prato-img-wrapper">
+          <img src="images/hero-torta-pistache.jpg" alt="Torta de Pistache Chef Cris" loading="eager" decoding="async">
+          <div class="prato-expand-icon" aria-hidden="true">⤢</div>
+          <div class="prato-overlay">
+            <span class="prato-tag">Edição Especial</span>
+            <h3 class="prato-title">Torta Autoral de Pistache</h3>
+            <p class="prato-desc">Gosto intenso de pistache com texturas harmonizadas.</p>
+          </div>
+        </div>
+      </button>
+    </div>
+  </div>
+</section>
+
+<div class="prato-modal" id="pratoModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="prato-modal-content">
+    <button class="prato-modal-close" id="modalCloseBtn" aria-label="Fechar detalhes do prato">&times;</button>
+    <img src="" alt="" class="prato-modal-img" id="modalImg">
+    <div class="prato-modal-info">
+      <div class="section-label" id="modalTag" style="margin-bottom:8px;">Tag</div>
+      <h3 id="modalTitle" style="font-family:var(--serif); font-size:28px; color:var(--branco); margin-bottom:16px;">Título do Prato</h3>
+      <p id="modalDesc" style="font-size:14.5px; line-height:1.8; color:var(--creme); opacity:.9; font-weight:300;">Descrição detalhada do prato.</p>
+      <div style="margin-top:28px;">
+        <a href="https://wa.me/5551999308408" id="modalCtaBtn" target="_blank" rel="noopener noreferrer" class="btn btn-gold" style="font-size:10px; padding:12px 20px;">Solicitar para Eventos</a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <section class="trajetoria" id="trajetoria">
   <div class="margin-note left">Brasil · Itália · França</div>
@@ -671,7 +1092,7 @@
 
     <div class="timeline">
       <div class="t-item reveal">
-        <div class="t-num"><svg viewBox="0 0 24 24"><path d="M12 2c-3 4-7 6-7 11a7 7 0 0 0 14 0c0-5-4-7-7-11z"/><path d="M12 6v14"/></svg><span>01</span></div>
+        <div class="t-num"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-compasso"/></svg><span>01</span></div>
         <div class="t-tag">Fundamentos Acadêmicos</div>
         <h3>Direito, Matemática & Magistratura</h3>
         <p>Bacharelados em Matemática (1991) e Direito (2001), consolidando um raciocínio analítico estruturado. Pós-graduação em Metodologia do Ensino e especializações em Direito Penal e Previdenciário, com atuação na Magistratura (AJURIS) — o rigor técnico que hoje orienta a gestão gastronômica.</p>
@@ -679,14 +1100,14 @@
       </div>
 
       <div class="t-item reveal">
-        <div class="t-num"><svg viewBox="0 0 24 24"><path d="M12 2c-3 4-7 6-7 11a7 7 0 0 0 14 0c0-5-4-7-7-11z"/><path d="M12 6v14"/></svg><span>02</span></div>
+        <div class="t-num"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-compasso"/></svg><span>02</span></div>
         <div class="t-tag">Formação no Brasil</div>
         <h3>Patisserie e Boulangerie</h3>
         <p>Pós-graduação em Patisserie e Boulangerie (2022), com especialização focada no refinamento técnico de pães e doces finos, unindo o domínio das bases clássicas brasileiras à aplicação de técnicas contemporâneas.</p>
       </div>
 
       <div class="t-item reveal">
-        <div class="t-num"><svg viewBox="0 0 24 24"><path d="M12 2c-3 4-7 6-7 11a7 7 0 0 0 14 0c0-5-4-7-7-11z"/><path d="M12 6v14"/></svg><span>03</span></div>
+        <div class="t-num"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-compasso"/></svg><span>03</span></div>
         <div class="t-tag">Especialização na Itália</div>
         <h3>ICIF Academy — Bologna</h3>
         <p>Imersão intensiva em Pasticceria e Massa Fresca Artesanal na capital gastronômica da Itália. Certificação como especialista em produtos sem glúten e formação em Praline Design — a arte do chocolate italiano aplicada a bombons de design sofisticado.</p>
@@ -694,35 +1115,35 @@
       </div>
 
       <div class="t-item reveal">
-        <div class="t-num"><svg viewBox="0 0 24 24"><path d="M12 2c-3 4-7 6-7 11a7 7 0 0 0 14 0c0-5-4-7-7-11z"/><path d="M12 6v14"/></svg><span>04</span></div>
+        <div class="t-num"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-compasso"/></svg><span>04</span></div>
         <div class="t-tag">Formação na França</div>
         <h3>France Panificação — Níveis I ao V</h3>
-        <p>Conclusão completa dos níveis I ao V, consolidando o domínio técnico tradicional francês. Maestria em viennoiserie, massas folhadas e fermentação avançada, além da criação de sanduíches exclusivos unindo técnicas europeias a ingredientes premium.</p>
+        <p>Conclusão completa dos níveis I ao V, consolidando o domínio técnico tradicional francês. Maestria em viennoiserie, massas folhadas e fermentação avançada, além da criação de sanduíches exclusivos unindo techniques europeias a ingredientes premium.</p>
       </div>
 
       <div class="t-item reveal">
-        <div class="t-num"><svg viewBox="0 0 24 24"><path d="M12 2c-3 4-7 6-7 11a7 7 0 0 0 14 0c0-5-4-7-7-11z"/><path d="M12 6v14"/></svg><span>05</span></div>
+        <div class="t-num"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-compasso"/></svg><span>05</span></div>
         <div class="t-tag">Mestria em Chocolataria</div>
         <h3>Precisão e Design em Chocolate</h3>
         <p>Formação completa em Chocolataria I a III e Caramelos com Renata Penido. Técnicas avançadas de "Different Angle" com Andrey Dubovick, focadas em estética disruptiva. Aperfeiçoamento internacional ao lado dos mestres Ramon Morató e Luis Amado.</p>
       </div>
 
       <div class="t-item reveal">
-        <div class="t-num"><svg viewBox="0 0 24 24"><path d="M12 2c-3 4-7 6-7 11a7 7 0 0 0 14 0c0-5-4-7-7-11z"/><path d="M12 6v14"/></svg><span>06</span></div>
+        <div class="t-num"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-compasso"/></svg><span>06</span></div>
         <div class="t-tag">Massas e Panificação</div>
         <h3>EGAS & Fermentação Natural</h3>
         <p>Formação profissional em Panificação e Pizzas na EGAS, com domínio de pães artesanais de alta hidratação. Mentoria com Mia Vasconcelos em massas artísticas e gastronomia vegana criativa, além de especialização em Sourdough.</p>
       </div>
 
       <div class="t-item reveal">
-        <div class="t-num"><svg viewBox="0 0 24 24"><path d="M12 2c-3 4-7 6-7 11a7 7 0 0 0 14 0c0-5-4-7-7-11z"/><path d="M12 6v14"/></svg><span>07</span></div>
+        <div class="t-num"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-compasso"/></svg><span>07</span></div>
         <div class="t-tag">Aperfeiçoamentos</div>
         <h3>Gastronomia Funcional & Eventos</h3>
         <p>Foco em eventos de alto padrão unindo saúde e sofisticação. Exploração da Fusion Cuisine e da cozinha mexicana autêntica, com domínio em tapas, saladas gourmet e a meticulosa estética do empratamento artístico.</p>
       </div>
 
       <div class="t-item reveal">
-        <div class="t-num"><svg viewBox="0 0 24 24"><path d="M12 2c-3 4-7 6-7 11a7 7 0 0 0 14 0c0-5-4-7-7-11z"/><path d="M12 6v14"/></svg><span>08</span></div>
+        <div class="t-num"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-compasso"/></svg><span>08</span></div>
         <div class="t-tag">Confeitaria Artística</div>
         <h3>Doces Finos e Criações Exclusivas</h3>
         <p>Criação de Number Cakes, tortas especiais, brownies, cookies e a sofisticação dos bolos caseiros — doces finos para celebrações exclusivas com design exclusivo e técnicas francesas para eventos de luxo.</p>
@@ -732,53 +1153,53 @@
 </section>
 
 <section class="premios dark-section" id="premios">
-  <svg class="watermark wm-right" viewBox="0 0 200 200"><circle cx="100" cy="100" r="88"/><path d="M100 26 Q68 58 68 100 Q68 142 100 174"/><path d="M100 38 Q84 48 76 57 M100 58 Q82 66 73 75 M100 78 Q82 87 73 96 M100 98 Q82 107 73 116 M100 118 Q84 127 76 136 M100 138 Q87 145 80 152"/><path d="M128 46 Q150 68 150 100 Q150 132 128 154"/><path d="M128 58 L142 50 M128 76 L145 70 M128 94 L147 92 M128 112 L145 116 M128 130 L142 138"/></svg>
+  <svg class="watermark wm-right" viewBox="0 0 200 200" aria-hidden="true"><use href="#ic-botanica"/></svg>
   <div class="margin-note left">Excelência Reconhecida</div>
   <div class="margin-note right">Jun · 2026</div>
   <div class="container">
     <div class="reveal" style="max-width:640px;">
       <div class="section-label">Reconhecimentos</div>
       <h2 class="section-title">Prêmios e <em>Honras</em></h2>
-      <p style="margin-top:22px;color:var(--creme);font-weight:300;line-height:1.8;opacity:.85;">Vencedora do Prêmio Boulangerie France Brasil (Junho/2026), reafirmando a maestria na panificação clássica francesa.</p>
+      <p class="premios-lead">Vencedora do Prêmio Boulangerie France Brasil (Junho/2026), reafirmando a maestria na panificação clássica francesa.</p>
     </div>
 
     <div class="premios-grid reveal">
       <div class="premio-card">
         <div class="medal">
-          <svg class="laurel left" viewBox="0 0 24 40" fill="none" stroke="currentColor"><path d="M14 2 Q6 8 6 18 Q6 28 14 38"/><path d="M14 6 Q10 8 8 10 M14 12 Q9 13 7 15 M14 18 Q9 19 7 21 M14 24 Q9 25 7 27 M14 30 Q10 31 8 33"/></svg>
-          <div class="ring"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M12 2 3 7v6c0 5 4 9 9 9s9-4 9-9V7l-9-5z"/></svg></div>
-          <svg class="laurel right" viewBox="0 0 24 40" fill="none" stroke="currentColor"><path d="M14 2 Q6 8 6 18 Q6 28 14 38"/><path d="M14 6 Q10 8 8 10 M14 12 Q9 13 7 15 M14 18 Q9 19 7 21 M14 24 Q9 25 7 27 M14 30 Q10 31 8 33"/></svg>
+          <svg class="laurel left" viewBox="0 0 24 40" fill="none" stroke="currentColor" aria-hidden="true"><use href="#ic-laurel"/></svg>
+          <div class="ring"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" aria-hidden="true"><path d="M12 2 3 7v6c0 5 4 9 9 9s9-4 9-9V7l-9-5z"/></svg></div>
+          <svg class="laurel right" viewBox="0 0 24 40" fill="none" stroke="currentColor" aria-hidden="true"><use href="#ic-laurel"/></svg>
         </div>
         <h3>Destaque em Baguete</h3>
         <p>Reconhecida por sua excelência técnica e sabor autêntico na panificação tradicional.</p>
       </div>
       <div class="premio-card">
         <div class="medal">
-          <svg class="laurel left" viewBox="0 0 24 40" fill="none" stroke="currentColor"><path d="M14 2 Q6 8 6 18 Q6 28 14 38"/><path d="M14 6 Q10 8 8 10 M14 12 Q9 13 7 15 M14 18 Q9 19 7 21 M14 24 Q9 25 7 27 M14 30 Q10 31 8 33"/></svg>
-          <div class="ring"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="12" cy="8" r="6"/><path d="M8.5 13.5 7 22l5-3 5 3-1.5-8.5"/></svg></div>
-          <svg class="laurel right" viewBox="0 0 24 40" fill="none" stroke="currentColor"><path d="M14 2 Q6 8 6 18 Q6 28 14 38"/><path d="M14 6 Q10 8 8 10 M14 12 Q9 13 7 15 M14 18 Q9 19 7 21 M14 24 Q9 25 7 27 M14 30 Q10 31 8 33"/></svg>
+          <svg class="laurel left" viewBox="0 0 24 40" fill="none" stroke="currentColor" aria-hidden="true"><use href="#ic-laurel"/></svg>
+          <div class="ring"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M8.5 13.5 7 22l5-3 5 3-1.5-8.5"/></svg></div>
+          <svg class="laurel right" viewBox="0 0 24 40" fill="none" stroke="currentColor" aria-hidden="true"><use href="#ic-laurel"/></svg>
         </div>
         <h3>Destaque em Croissant</h3>
         <p>Reconhecimento de alto padrão em viennoiserie, posicionando suas dobras folhadas entre as melhores.</p>
       </div>
       <div class="premio-card">
         <div class="medal">
-          <svg class="laurel left" viewBox="0 0 24 40" fill="none" stroke="currentColor"><path d="M14 2 Q6 8 6 18 Q6 28 14 38"/><path d="M14 6 Q10 8 8 10 M14 12 Q9 13 7 15 M14 18 Q9 19 7 21 M14 24 Q9 25 7 27 M14 30 Q10 31 8 33"/></svg>
-          <div class="ring"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/></svg></div>
-          <svg class="laurel right" viewBox="0 0 24 40" fill="none" stroke="currentColor"><path d="M14 2 Q6 8 6 18 Q6 28 14 38"/><path d="M14 6 Q10 8 8 10 M14 12 Q9 13 7 15 M14 18 Q9 19 7 21 M14 24 Q9 25 7 27 M14 30 Q10 31 8 33"/></svg>
+          <svg class="laurel left" viewBox="0 0 24 40" fill="none" stroke="currentColor" aria-hidden="true"><use href="#ic-laurel"/></svg>
+          <div class="ring"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" aria-hidden="true"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/></svg></div>
+          <svg class="laurel right" viewBox="0 0 24 40" fill="none" stroke="currentColor" aria-hidden="true"><use href="#ic-laurel"/></svg>
         </div>
         <h3>Reconhecimento Internacional</h3>
         <p>Consagração pela maestria técnica e respeito aos processos clássicos franceses.</p>
       </div>
     </div>
     <div class="premio-banner reveal">
-      <p>
-      <span>Prêmio Boulangerie France Brasil · Jun 2026</span>
+      <p>Prêmio Boulangerie France Brasil</p>
+      <span>Junho de 2026</span>
     </div>
   </div>
 </section>
 
-<div class="motif-divider"><div class="line"></div><img src="images/logo-black.png" alt=""><div class="line"></div></div>
+<div class="motif-divider"><div class="line"></div><img src="images/logo-black.png" alt="" loading="lazy"><div class="line"></div></div>
 
 <section class="cursos" id="cursos">
   <div class="margin-note left">Croissant · Panetone</div>
@@ -794,13 +1215,13 @@
       <div class="curso-card curso-em-breve reveal">
         <div class="curso-visual">
           <span class="curso-tag">Em Breve</span>
-          <svg class="curso-icon" viewBox="0 0 100 100"><circle cx="50" cy="50" r="34"/><path d="M50 20 Q34 36 34 50 Q34 64 50 80"/><path d="M50 28 Q42 33 38 38 M50 38 Q41 43 36 48 M50 48 Q41 53 36 58 M50 58 Q42 63 38 68"/></svg>
+          <svg class="curso-icon" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="34"/><path d="M50 20 Q34 36 34 50 Q34 64 50 80"/><path d="M50 28 Q42 33 38 38 M50 38 Q41 43 36 48 M50 48 Q41 53 36 58 M50 58 Q42 63 38 68"/></svg>
           <div class="curso-title-over"><h3>Cursos Ministrados pela Chef Cris</h3></div>
         </div>
         <div class="curso-body curso-body-center">
           <p>Novos cursos de alta panificação e confeitaria estão a caminho — com a mesma técnica que rendeu à Chef Cris o Prêmio Boulangerie France Brasil. Acompanhe o anúncio em primeira mão no Instagram.</p>
-          <a href="https://www.instagram.com/p/DZ8a8flRtrZ/" target="_blank" rel="noopener" class="curso-cta curso-cta-center">
-            Acompanhar Novidade no Instagram <span class="arrow">→</span>
+          <a href="https://www.instagram.com/p/DZ8a8flRtrZ/" target="_blank" rel="noopener noreferrer" class="curso-cta curso-cta-center">
+            Acompanhar Novidade no Instagram <span class="arrow" aria-hidden="true">→</span>
           </a>
         </div>
       </div>
@@ -849,12 +1270,12 @@
           <span>Comunidade Criativa</span>
           <span>Locação de Cozinhas Industriais</span>
         </div>
-        <a href="https://casa408.com.br/" target="_blank" rel="noopener" class="btn btn-gold">Conhecer a Casa 408</a>
+        <a href="https://casa408.com.br/" target="_blank" rel="noopener noreferrer" class="btn btn-gold">Conhecer a Casa 408</a>
       </div>
       <div class="casa408-visual reveal">
         <div class="casa408-photo-wrap">
           <div class="casa408-photo-frame"></div>
-          <img src="images/casa408-fachada.jpg" alt="Fachada da Casa 408, coworking gastronômico da Chef Cris Bertolazzi">
+          <img src="images/casa408-fachada.jpg" alt="Fachada da Casa 408, coworking gastronômico da Chef Cris Bertolazzi" loading="lazy">
           <div class="casa408-caption">
             <b>408</b>
             <span>Coworking</span>
@@ -866,13 +1287,13 @@
 </section>
 
 <section class="encerramento" id="contato">
-  <svg class="watermark wm-left" viewBox="0 0 200 200"><circle cx="100" cy="100" r="88"/><path d="M100 26 Q68 58 68 100 Q68 142 100 174"/><path d="M100 38 Q84 48 76 57 M100 58 Q82 66 73 75 M100 78 Q82 87 73 96 M100 98 Q82 107 73 116 M100 118 Q84 127 76 136 M100 138 Q87 145 80 152"/><path d="M128 46 Q150 68 150 100 Q150 132 128 154"/><path d="M128 58 L142 50 M128 76 L145 70 M128 94 L147 92 M128 112 L145 116 M128 130 L142 138"/></svg>
-  <svg class="watermark wm-right" viewBox="0 0 200 200"><circle cx="100" cy="100" r="88"/><path d="M100 26 Q68 58 68 100 Q68 142 100 174"/><path d="M100 38 Q84 48 76 57 M100 58 Q82 66 73 75 M100 78 Q82 87 73 96 M100 98 Q82 107 73 116 M100 118 Q84 127 76 136 M100 138 Q87 145 80 152"/><path d="M128 46 Q150 68 150 100 Q150 132 128 154"/><path d="M128 58 L142 50 M128 76 L145 70 M128 94 L147 92 M128 112 L145 116 M128 130 L142 138"/></svg>
+  <svg class="watermark wm-left" viewBox="0 0 200 200" aria-hidden="true"><use href="#ic-botanica"/></svg>
+  <svg class="watermark wm-right" viewBox="0 0 200 200" aria-hidden="true"><use href="#ic-botanica"/></svg>
   <div class="margin-note left">Chef Cris Bertolazzi</div>
   <div class="margin-note right">Excelência em Gastronomia</div>
   <div class="container">
     <div class="reveal">
-      <div class="quote-mark">"</div>
+      <div class="quote-mark" aria-hidden="true">"</div>
       <h2>Transformando ingredientes técnicos em arte culinária, com rigor profissional e sensibilidade artística — do conceito ao paladar final.</h2>
       <div class="footer-cta">
         <a href="#cursos" class="btn btn-laranja">Quero Aprender com a Chef</a>
@@ -882,64 +1303,175 @@
   </div>
 </section>
 
+</main>
+
 <footer>
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <img src="images/logo-gold.png" alt="Chef Cris Bertolazzi">
+        <img src="images/logo-gold.png" alt="Chef Cris Bertolazzi" width="40" height="40" loading="lazy">
         <div>
           <b>Chef Cris Bertolazzi</b>
           <span>Excelência em Gastronomia</span>
         </div>
       </div>
       <div class="social">
-        <a href="https://www.instagram.com/chefcrisbertolazzi/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
-        <a href="https://wa.me/5551999308408?text=Ol%C3%A1%21%20Vim%20pelo%20site%20e%20gostaria%20de%20saber%20mais%20sobre%20os%20cursos." target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.6L3 21l1.9-5.6A8.5 8.5 0 1 1 21 11.5z"/></svg></a>
+        <a href="https://www.instagram.com/chefcrisbertolazzi/" target="_blank" rel="noopener noreferrer" aria-label="Instagram (abre em nova aba)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><use href="#ic-instagram"/></svg></a>
+        <a href="https://wa.me/5551999308408?text=Ol%C3%A1%21%20Vim%20pelo%20site%20e%20gostaria%20de%20saber%20mais%20sobre%20os%20cursos." target="_blank" rel="noopener noreferrer" aria-label="WhatsApp (abre em nova aba)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><use href="#ic-whatsapp"/></svg></a>
       </div>
     </div>
     <div class="copyright">© 2026 Chef Cris Bertolazzi — Todos os direitos reservados.</div>
   </div>
 </footer>
 
-<a href="https://wa.me/5551999308408?text=Ol%C3%A1%21%20Vim%20pelo%20site%20e%20gostaria%20de%20saber%20mais%20sobre%20os%20cursos." target="_blank" rel="noopener" class="float-contact" id="floatContact" aria-label="Fale pelo WhatsApp">
-  <svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.6L3 21l1.9-5.6A8.5 8.5 0 1 1 21 11.5z"/></svg>
+<a href="https://wa.me/5551999308408?text=Ol%C3%A1%21%20Vim%20pelo%20site%20e%20gostaria%20de%20saber%20mais%20sobre%20os%20cursos." target="_blank" rel="noopener noreferrer" class="float-contact" id="floatContact" aria-label="Fale pelo WhatsApp (abre em nova aba)">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-whatsapp"/></svg>
 </a>
 
 <script>
-  // Header scroll state + barra de progresso + botão flutuante
+(() => {
+  'use strict';
+
   const header = document.getElementById('site-header');
   const progressBar = document.getElementById('progressBar');
   const floatContact = document.getElementById('floatContact');
-  window.addEventListener('scroll', () => {
-    header.classList.toggle('scrolled', window.scrollY > 40);
+
+  // --- Scroll Handler GPU-Accelerated (Zero Risco no Topo Y:0) ---
+  let ticking = false;
+  function onScrollFrame() {
     const scrollTop = window.scrollY;
     const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-    progressBar.style.width = pct + '%';
+    const pct = docHeight > 0 ? Math.min(1, Math.max(0, scrollTop / docHeight)) : 0;
+
+    progressBar.style.transform = `scaleX(${pct})`;
+    progressBar.setAttribute('aria-valuenow', Math.round(pct * 100));
+
+    // Ativa a opacidade da barra apenas se houver scroll (evita linha no topo)
+    progressBar.classList.toggle('active', scrollTop > 10);
+    header.classList.toggle('scrolled', scrollTop > 40);
     floatContact.classList.toggle('show', scrollTop > window.innerHeight * 0.6);
+
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(onScrollFrame);
+      ticking = true;
+    }
   }, { passive: true });
+  
+  onScrollFrame();
 
-  // Mobile menu
+  // --- Menu mobile ---
   const burgerBtn = document.getElementById('burgerBtn');
-  const closeMenu = document.getElementById('closeMenu');
+  const closeMenuBtn = document.getElementById('closeMenu');
   const mobileMenu = document.getElementById('mobileMenu');
-  burgerBtn.addEventListener('click', () => mobileMenu.classList.add('open'));
-  closeMenu.addEventListener('click', () => mobileMenu.classList.remove('open'));
-  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+  let lastFocused = null;
 
-  // Reveal on scroll
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in');
-        observer.unobserve(entry.target);
-      }
+  function openMobileMenu() {
+    lastFocused = document.activeElement;
+    mobileMenu.classList.add('open');
+    burgerBtn.setAttribute('aria-expanded', 'true');
+    closeMenuBtn.focus();
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMobileMenu() {
+    mobileMenu.classList.remove('open');
+    burgerBtn.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+    if (lastFocused) lastFocused.focus();
+  }
+
+  burgerBtn.addEventListener('click', openMobileMenu);
+  closeMenuBtn.addEventListener('click', closeMobileMenu);
+  mobileMenu.addEventListener('click', (e) => {
+    if (e.target.tagName === 'A') closeMobileMenu();
+  });
+  mobileMenu.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMobileMenu();
+  });
+
+  // --- Reveal on scroll (Intersection Observer) ---
+  const revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && revealEls.length) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => observer.observe(el));
+  } else {
+    revealEls.forEach(el => el.classList.add('in'));
+  }
+
+  // --- Modal / Lightbox com Fallback de Imagem Seguro ---
+  const pratoModal = document.getElementById('pratoModal');
+  const modalImg = document.getElementById('modalImg');
+  const modalTag = document.getElementById('modalTag');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalDesc = document.getElementById('modalDesc');
+  const modalCtaBtn = document.getElementById('modalCtaBtn');
+  const modalCloseBtn = document.getElementById('modalCloseBtn');
+  const pratosGrid = document.querySelector('.pratos-grid');
+  let modalLastFocused = null;
+
+  function openPratoModal(card) {
+    modalLastFocused = document.activeElement;
+    const innerImg = card.querySelector('img');
+    const imgSrc = card.getAttribute('data-img') || (innerImg ? innerImg.getAttribute('src') : '');
+    const tag = card.getAttribute('data-tag') || 'Alta Gastronomia';
+    const title = card.getAttribute('data-title') || '';
+    const desc = card.getAttribute('data-desc') || '';
+
+    modalImg.src = imgSrc;
+    modalImg.alt = title || 'Prato da Chef Cris';
+    modalTag.textContent = tag;
+    modalTitle.textContent = title;
+    modalDesc.textContent = desc;
+
+    if (modalCtaBtn) {
+      const msg = encodeURIComponent(`Olá! Vim pelo site e gostaria de solicitar mais informações sobre a criação: ${title}`);
+      modalCtaBtn.href = `https://wa.me/5551999308408?text=${msg}`;
+    }
+
+    pratoModal.classList.add('active');
+    pratoModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    if (modalCloseBtn) modalCloseBtn.focus();
+  }
+
+  function closePratoModal() {
+    pratoModal.classList.remove('active');
+    pratoModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    if (modalLastFocused) modalLastFocused.focus();
+  }
+
+  if (pratosGrid) {
+    pratosGrid.addEventListener('click', (e) => {
+      const card = e.target.closest('.prato-card');
+      if (card) openPratoModal(card);
     });
-  }, { threshold: 0.15 });
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  }
+
+  if (modalCloseBtn) modalCloseBtn.addEventListener('click', closePratoModal);
+  if (pratoModal) {
+    pratoModal.addEventListener('click', (e) => {
+      if (e.target === pratoModal) closePratoModal();
+    });
+  }
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && pratoModal && pratoModal.classList.contains('active')) {
+      closePratoModal();
+    }
+  });
+})();
 </script>
 
 </body>
 </html>
-
-
