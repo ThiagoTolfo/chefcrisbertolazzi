@@ -570,21 +570,39 @@
     .t-num { width: 56px; height: 56px; font-size: 17px; }
   }
 
-  /* Responsivo Smartphone */
+/* Responsivo Smartphone (Mobile Otimizado) */
   @media (max-width: 600px) {
-    .container { padding: 0 22px; }
-    .hero-glow { padding: 130px 20px 80px; }
+    .container { padding: 0 20px; }
+
+    /* 1. HERO / TOPO */
+    .hero-glow { padding: 120px 20px 70px; }
+    .hero-glow h1 { font-size: clamp(34px, 8.5vw, 46px); }
+    .hero-glow .eyebrow { font-size: 9.5px; letter-spacing: .15em; flex-wrap: wrap; }
+    .hero-glow .eyebrow::before,
+    .hero-glow .eyebrow::after { display: none; }
     .hero-glow .hero-actions { flex-direction: column; width: 100%; }
     .hero-glow .btn { width: 100%; justify-content: center; }
-    .footer-grid { flex-direction: column; text-align: center; }
+
+    /* 2. SEÇÃO SOBRE */
+    .sobre { padding: 80px 0 40px; }
+    .sobre-grid { grid-template-columns: 1fr; gap: 60px; }
+    .sobre-badge { right: 0; bottom: -24px; width: 96px; height: 96px; }
+
+    /* 3. JORNADA (1 coluna no celular para o texto não cortar) */
+    .jornada { padding: 10px 0 60px; }
+    .jornada-grid { grid-template-columns: 1fr; gap: 16px; }
+    .jornada-card { height: 280px; }
+    .jornada-cap h4 { font-size: 20px; }
+
+    /* 4. CASA 408 E FOOTER */
     .casa408-photo-wrap { width: 230px; }
     .casa408-photo-wrap img { height: 310px; }
     .casa408-photo-frame { top: 14px; left: -14px; right: -14px; bottom: -14px; }
     .casa408-caption { right: -14px; bottom: -20px; padding: 12px 18px; }
     .casa408-caption b { font-size: 22px; }
+    .footer-grid { flex-direction: column; text-align: center; }
     .ambient-glow { height: 320px; filter: blur(60px); }
   }
-
   /* Menu Mobile Overlay */
   .mobile-menu {
     position: fixed; inset: 0; background: rgba(14, 11, 8, .98); z-index: 1500;
